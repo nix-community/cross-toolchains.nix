@@ -13,3 +13,7 @@ Right now we build stdenv for:
 - s390x
 - x86_64-netbsd
 - gnu32
+- ppc64
+- wasi32
+- mingw32
+- mingwW64
