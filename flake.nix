@@ -15,7 +15,11 @@
         avr
         s390x
         x86_64-netbsd
-        gnu32;
+        gnu32
+        ppc64
+        wasi32
+        mingw32
+        mingwW64;
     };
     hydraJobs = nixpkgs.lib.mapAttrs (_: arch: arch.stdenv) self.packages.x86_64-linux;
   };
