@@ -82,6 +82,10 @@
     clang-jobs = lib.mapAttrs'
       (name: arch: lib.nameValuePair "pkgsCross.${name}.clang" arch.buildPackages.clang)
       (lib.getAttrs clangPlatforms self.packages.x86_64-linux);
+
+    rustc-jobs = lib.mapAttrs'
+      (name: arch: lib.nameValuePair "pkgsCross.${name}.rustc" arch.buildPackages.rustc)
+      (lib.getAttrs clangPlatforms self.packages.x86_64-linux);
   in {
     packages.x86_64-linux = lib.filterAttrs (n: v:
       !(
@@ -94,6 +98,6 @@
         false
       )
     ) pkgsCross;
-    hydraJobs = stdenv-jobs // hello-jobs // go-jobs // clang-jobs;
+    hydraJobs = stdenv-jobs // hello-jobs // go-jobs // clang-jobs // rustc-jobs;
   };
 }
