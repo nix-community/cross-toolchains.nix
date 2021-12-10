@@ -6,6 +6,29 @@
   outputs = { self, nixpkgs }: let
     pkgsCross = nixpkgs.legacyPackages.x86_64-linux.pkgsCross;
     inherit (nixpkgs) lib;
+
+    # those are known to build
+    goPlatforms = [
+      "aarch64-multiplatform"
+      "armv7l-hf-multiplatform"
+      "ben-nanonote"
+      "gnu32"
+      "gnu64"
+      "musl-power"
+      "musl32"
+      "musl64"
+      "muslpi"
+      "pogoplug4"
+      "powernv"
+      "raspberryPi"
+      "remarkable1"
+      "remarkable2"
+      "riscv64"
+      "s390x"
+      "scaleway-c1"
+      "sheevaplug"
+      "x86_64-netbsd"
+    ];
   in {
     packages.x86_64-linux = lib.filterAttrs (n: v:
       !(
@@ -18,6 +41,10 @@
         false
       )
     ) pkgsCross;
-    hydraJobs = lib.mapAttrs (_: arch: arch.stdenv) self.packages.x86_64-linux;
+    hydraJobs =
+      lib.mapAttrs (_: arch: arch.stdenv) self.packages.x86_64-linux
+      // lib.mapAttrs' (name: arch:
+        lib.nameValuePair "go-${name}" arch.buildPackages.go
+      ) (lib.getAttrs goPlatforms self.packages.x86_64-linux);
   };
 }
