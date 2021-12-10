@@ -29,6 +29,17 @@
       "sheevaplug"
       "x86_64-netbsd"
     ];
+    stdenv-jobs = lib.mapAttrs'
+      (name: arch: lib.nameValuePair "stdenv.${name}" arch.stdenv)
+      self.packages.x86_64-linux;
+
+    go-jobs = lib.mapAttrs'
+      (name: arch: lib.nameValuePair "go.${name}" arch.buildPackages.go)
+      (lib.getAttrs goPlatforms self.packages.x86_64-linux);
+
+    clang-jobs = lib.mapAttrs'
+      (name: arch: lib.nameValuePair "clang.${name}" arch.buildPackages.clang)
+      self.packages.x86_64-linux;
   in {
     packages.x86_64-linux = lib.filterAttrs (n: v:
       !(
@@ -41,10 +52,6 @@
         false
       )
     ) pkgsCross;
-    hydraJobs =
-      lib.mapAttrs (_: arch: arch.stdenv) self.packages.x86_64-linux
-      // lib.mapAttrs' (name: arch:
-        lib.nameValuePair "go-${name}" arch.buildPackages.go
-      ) (lib.getAttrs goPlatforms self.packages.x86_64-linux);
+    hydraJobs = stdenv-jobs // go-jobs // clang-jobs;
   };
 }
