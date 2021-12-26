@@ -8,27 +8,6 @@
     inherit (nixpkgs) lib;
 
     # those are known to build
-    goPlatforms = [
-      "aarch64-multiplatform"
-      "armv7l-hf-multiplatform"
-      "ben-nanonote"
-      "gnu32"
-      "gnu64"
-      "musl-power"
-      "musl32"
-      "musl64"
-      "muslpi"
-      "pogoplug4"
-      "powernv"
-      "raspberryPi"
-      "remarkable1"
-      "remarkable2"
-      "riscv64"
-      "s390x"
-      "scaleway-c1"
-      "sheevaplug"
-      "x86_64-netbsd"
-    ];
     clangPlatforms = [
       "aarch64-android"
       "aarch64-multiplatform-musl"
@@ -75,9 +54,32 @@
         true
       )) self.packages.x86_64-linux);
 
+    brokenGoPlatforms = [
+      "s390"
+      "mmix"
+      "mingw32"
+      "mingwW64"
+      "m68k"
+      "ghcjs"
+      "x86_64-unknown-redox"
+      "wasi32"
+      "ppc64-musl"
+      "ppc64"
+      "riscv32"
+
+      "armv7a-android-prebuilt"
+      "aarch64-android"
+      "aarch64-android-prebuilt"
+    ];
+    substractAttrs = keys: attrs: lib.getAttrs (lib.subtractLists keys (builtins.attrNames attrs)) attrs;
+
+    pkgsWithOS = lib.filterAttrs
+      (n: v: v.targetPlatform.parsed.kernel.name != "none")
+      self.packages.x86_64-linux;
+
     go-jobs = lib.mapAttrs'
       (name: arch: lib.nameValuePair "pkgsCross.${name}.go" arch.buildPackages.go)
-      (lib.getAttrs goPlatforms self.packages.x86_64-linux);
+      (substractAttrs brokenGoPlatforms pkgsWithOS);
 
     clang-jobs = lib.mapAttrs'
       (name: arch: lib.nameValuePair "pkgsCross.${name}.clang" arch.buildPackages.clang)
