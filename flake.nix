@@ -1,7 +1,7 @@
 {
   description = "Prebuild cross-toolchains for various targets";
 
-  inputs.nixpkgs.url = "github:Mic92/nixpkgs/fix-platforms";
+  inputs.nixpkgs.url = "github:Mic92/nixpkgs";
 
   outputs = { self, nixpkgs }: let
     pkgsCross = nixpkgs.legacyPackages.x86_64-linux.pkgsCross;
