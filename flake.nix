@@ -93,6 +93,10 @@
         n == "fuloongminipc"                || # some definition conflict broken with glibc <-> kernelHeaders
         n == "vc4"                          || # binutils/gcc broken; clevera wants to fix it
         (lib.hasPrefix "mipsisa" n)         || # junk, never worked, should be not in nixpkgs
+        n == "mipsel-linux-gnu"             || # junk, unknown abi o32
+        n == "mips-linux-gnu"               || # junk, unknown abi o32
+        n == "mips64el-linux-gnuabin32"     || # junk
+        n == "mips64-linux-gnuabin32"       || # junk
         false
       )
     ) pkgsCross;
