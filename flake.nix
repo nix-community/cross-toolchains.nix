@@ -31,7 +31,6 @@
       "ppc64-musl"
       "ppc64"
       "ppcle-embedded"
-      "raspberryPi"
       "remarkable1"
       "remarkable2"
       "riscv64"
